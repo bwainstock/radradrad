@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS shows(
+	id INTEGER PRIMARY KEY ASC,
+	date INTEGER NOT NULL,
+	time TEXT NOT NULL, 
+	location TEXT NOT NULL,
+	headliner TEXT NOT NULL,
+	support TEXT,
+	url TEXT,
+	free TEXT );
