@@ -68,6 +68,59 @@ def chapel():
     return chapel_shows
 
 
+def parse_both(raw_show):
+    '''
+    Parse show information for Bottom of the Hill
+    '''
+
+    regex = r'vertical-align: top; background-color'
+    show = raw_show.find(style=re.compile(regex))
+
+    bands = show.findAll(class_='band')
+    if bands:
+        show_headliner = bands[0].text
+        print(show_headliner)
+        if len(bands) > 1:
+            show_supports = [band.text for band in bands[1:]]
+    show_url = show.find('a')
+    if show_url:
+        show_url = show_url.get('href')
+
+    show_date = [date.text for date in show.findAll(class_='date')]
+    if show_date:
+        show_date = ''.join(show_date).strip('\n')
+        show_date = datetime.strptime(show_date, '%A %B %d %Y')
+
+    show_time = ''.join([x.text for x in show.findAll(class_='time')])
+    if show_time:
+        show_time = show_time.replace('\n', ' ')
+
+    show_location = 'Bottom of the Hill'
+
+    show_age = show.findAll(class_='age')
+    if show_age:
+        show_age = [x.text for x in show_age if '\n' not in x.text]
+        show_age = ''.join(show_age)
+
+    show_cost = show.findAll(class_='cover')
+    if show_cost:
+        show_cost = ''.join([x.text for x in show_cost])
+        show_cost = show_cost.replace('\n', ' ')
+
+    show_info = {
+        'show_date': show_date,
+        'show_time': show_time,
+        'show_url': show_url,
+        'show_headliner': show_headliner,
+        'show_supports': show_supports,
+        'show_location': show_location,
+        'show_age': show_age,
+        'show_cost': show_cost
+        }
+
+    return show_info
+
+
 def both():
     '''
     Scrapes calendar information from Bottom of the Hill website.
@@ -82,50 +135,7 @@ def both():
     show_calendar = soup.find('table', id='listings').findAll('tr')
     for show in show_calendar:
         if show.find(class_='date'):
-            regex = r'vertical-align: top; background-color'
-            show = show.find(style=re.compile(regex))
-
-            bands = show.findAll(class_='band')
-            if bands:
-                show_headliner = bands[0].text
-                print(show_headliner)
-                if len(bands) > 1:
-                    show_supports = [band.text for band in bands[1:]]
-            show_url = show.find('a')
-            if show_url:
-                show_url = show_url.get('href')
-
-            show_date = [date.text for date in show.findAll(class_='date')]
-            if show_date:
-                show_date = ''.join(show_date).strip('\n')
-                show_date = datetime.strptime(show_date, '%A %B %d %Y')
-
-            show_time = ''.join([x.text for x in show.findAll(class_='time')])
-            if show_time:
-                show_time = show_time.replace('\n', ' ')
-
-            show_location = 'Bottom of the Hill'
-
-            show_age = show.findAll(class_='age')
-            if show_age:
-                show_age = [x.string for x in show_age if '\n' not in x.string]
-                show_age = ''.join(show_age)
-
-            show_cost = show.findAll(class_='cover')
-            if show_cost:
-                show_cost = ''.join([x.text for x in show_cost])
-                show_cost = show_cost.replace('\n', ' ')
-
-            show_info = {
-                'show_date': show_date,
-                'show_time': show_time,
-                'show_url': show_url,
-                'show_headliner': show_headliner,
-                'show_supports': show_supports,
-                'show_location': show_location,
-                'show_age': show_age,
-                'show_cost': show_cost
-                }
+            show_info = parse_both(show)
             both_shows.append(show_info)
 
     return both_shows
