@@ -5,31 +5,23 @@ A concert calendar for the Bay Area based on the idea of dardardar.org
 
 * Bottom of the Hill
 * The Chapel
-* 50 Mason Social House
-* Aquarius Records
-* Benders
-* Brainwash Cafe
-* Brick And Mortar Music Hall
+* [Brick And Mortar Music Hall](http://www.brickandmortarmusic.com/)
 * Cafe Du Nord
-* Casa Sanchez
-* El Rio
-* Elbo Room
-* Great American Music Hall
-* Hemlock Tavern
-* The Hotel Utah Saloon
-* The Independent
-* The Knockout
-* The Lab
+* [El Rio](http://www.elriosf.com/calendar/)
+* [Elbo Room](http://www.elbo.com/Calendar.php)
+* [Great American Music Hall](http://www.slimspresents.com/list-of-events/)
+* [Hemlock Tavern](http://www.hemlocktavern.com/calendar/upcoming/)
+* [The Hotel Utah Saloon](http://www.hotelutah.com/calendar/)
+* [The Independent](http://www.theindependentsf.com/)
 * Make-Out Room
-* The New Parish
-* Thee Parkside
-* Rickshaw Stop
-* The Riptide
-* The Starry Plough
+* [The New Parish](http://www.thenewparish.com/)
+* [Thee Parkside](http://www.theeparkside.com/month/4/2013)
+* [Rickshaw Stop](http://www.rickshawstop.com/listing-2)
+* The Riptide - Closed
 * The Stork Club
 * Sub-Mission
 * Subterranean Arthouse
-* Swedish American Hall
+* [Swedish American Hall](http://www.swedishamericanhall.com/main/calendar/)
 * Terminal
 * Underground SF
 * The Uptown
