@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/bwainstock/radradrad.svg?branch=master)](https://travis-ci.org/bwainstock/radradrad)
 # radradrad
 A concert calendar for the Bay Area based on the idea of dardardar.org
 
