@@ -26,3 +26,7 @@ A concert calendar for the Bay Area based on the idea of dardardar.org
 * Underground SF
 * The Uptown
 * Vitus
+
+# TODO
+
+Seperate Chapel parsing
