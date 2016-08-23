@@ -5,6 +5,8 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
+from models import db, Venue, Concert
+
 
 def _get_soup(url):
     '''
@@ -19,6 +21,7 @@ def chapel():
     '''
     Scrapes calendar information from The Chapel SF website.
     '''
+    venue = Venue.query.get(1)
     chapel_shows = []
     base_url = 'http://www.thechapelsf.com'
     calendar_url = ''.join([base_url, '/calendar/'])
@@ -64,6 +67,18 @@ def chapel():
                 'show_cost': show_cost
                 }
             chapel_shows.append(show_info)
+
+            concert = Concert(date=show_date,
+                              time=show_time,
+                              url=show_url,
+                              headliner=show_headliner,
+                              supports=','.join(show_supports),
+                              age=show_age,
+                              cost=show_cost,
+                              venue=venue)
+            db.session.add(concert)
+
+    db.session.commit()
 
     return chapel_shows
 
