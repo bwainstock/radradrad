@@ -17,6 +17,13 @@ def _get_soup(url):
     return soup
 
 
+def parse_chapel(raw_show):
+    '''
+    Parses shows for The Chapel SF
+    '''
+    return raw_show
+
+
 def chapel():
     '''
     Scrapes calendar information from The Chapel SF website.

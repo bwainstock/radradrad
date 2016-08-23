@@ -30,4 +30,5 @@ A concert calendar for the Bay Area based on the idea of dardardar.org
 
 # TODO
 
-Seperate Chapel parsing
+* Seperate Chapel parsing
+* DB Migration process
