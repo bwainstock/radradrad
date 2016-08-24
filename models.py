@@ -7,6 +7,7 @@ app.config.from_object('config')
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 #app.config['SQLALCHEMY_ECHO'] = True
 #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#db = SQLAlchemy(app, session_options={"autoflush": False})
 db = SQLAlchemy(app)
 
 

@@ -17,21 +17,43 @@ def _get_soup(url):
     return soup
 
 
-def insert_concert(show_info):
+def insert_or_update(show_info):
     '''
     Insert concert information into DB
     '''
+    show_date = show_info['show_date']
+    show_time = show_info['show_time']
+    show_url = show_info['show_url']
+    show_headliner = show_info['show_headliner']
+    show_supports = ','.join(show_info['show_supports'])
+    show_age = show_info['show_age']
+    show_location = show_info['show_location']
+    show_cost = show_info['show_cost']
 
-    venue = Venue.query.get(1)
-    concert = Concert(date=show_info['show_date'],
-                      time=show_info['show_time'],
-                      url=show_info['show_url'],
-                      headliner=show_info['show_headliner'],
-                      supports=','.join(show_info['show_supports']),
-                      age=show_info['show_age'],
-                      cost=show_info['show_cost'],
-                      venue=venue)
-    db.session.add(concert)
+    concert = Concert.query.filter_by(headliner=show_info['show_headliner'],
+                                      date=show_info['show_date'],
+                                      time=show_info['show_time']).first()
+#    if concert:
+#        print('concert exists {}'.format(concert.headliner))
+#        concert.date = show_date
+#        concert.time = show_time
+#        concert.url = show_url
+#        concert.headliner = show_headliner
+#        concert.supports = show_supports
+#        concert.age = show_age
+#        concert.cost = show_cost
+
+    else:
+        venue = Venue.query.filter_by(name=show_location).first()
+        concert = Concert(date=show_info['show_date'],
+                          time=show_info['show_time'],
+                          url=show_info['show_url'],
+                          headliner=show_info['show_headliner'],
+                          supports=','.join(show_info['show_supports']),
+                          age=show_info['show_age'],
+                          cost=show_info['show_cost'],
+                          venue=venue)
+    db.session.merge(concert)
 
 
 def parse_chapel(show_date, raw_show):
@@ -94,7 +116,7 @@ def chapel():
         for show in shows:
             show_info = parse_chapel(show_date, show)
             chapel_shows.append(show_info)
-            insert_concert(show_info)
+            insert_or_update(show_info)
 
     db.session.commit()
 
@@ -170,7 +192,7 @@ def both():
         if show.find(class_='date'):
             show_info = parse_both(show)
             both_shows.append(show_info)
-            insert_concert(show_info)
+            insert_or_update(show_info)
 
     db.session.commit()
     return both_shows
