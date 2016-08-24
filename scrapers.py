@@ -94,9 +94,9 @@ def chapel():
         for show in shows:
             show_info = parse_chapel(show_date, show)
             chapel_shows.append(show_info)
-#            insert_concert(show_info)
+            insert_concert(show_info)
 
-#    db.session.commit()
+    db.session.commit()
 
     return chapel_shows
 
@@ -170,5 +170,17 @@ def both():
         if show.find(class_='date'):
             show_info = parse_both(show)
             both_shows.append(show_info)
+            insert_concert(show_info)
 
+    db.session.commit()
     return both_shows
+
+
+def main():
+    db.create_all()
+    chapel()
+    both()
+
+
+if __name__ == '__main__':
+    main()

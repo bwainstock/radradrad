@@ -3,10 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
-#app.config.from_object('config')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-app.config['SQLALCHEMY_ECHO'] = True
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_object('config')
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+#app.config['SQLALCHEMY_ECHO'] = True
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
@@ -36,6 +36,7 @@ class Concert(db.Model):
     cost = db.Column(db.String(80))
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'))
 
+    db.UniqueConstraint(date, time, headliner)
 #    def __init__(self, date, time, url, headliner, supports, age, cost, venue_id):
 #        self.date = date
 #        self.time = time
