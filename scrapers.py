@@ -17,18 +17,67 @@ def _get_soup(url):
     return soup
 
 
-def parse_chapel(raw_show):
+def insert_concert(show_info):
+    '''
+    Insert concert information into DB
+    '''
+
+    venue = Venue.query.get(1)
+    concert = Concert(date=show_info['show_date'],
+                      time=show_info['show_time'],
+                      url=show_info['show_url'],
+                      headliner=show_info['show_headliner'],
+                      supports=','.join(show_info['show_supports']),
+                      age=show_info['show_age'],
+                      cost=show_info['show_cost'],
+                      venue=venue)
+    db.session.add(concert)
+
+
+def parse_chapel(show_date, raw_show):
     '''
     Parses shows for The Chapel SF
     '''
-    return raw_show
+    show = raw_show
+    base_url = 'http://www.thechapelsf.com'
+    show_url = show.find(class_='url')
+    if show_url:
+        show_headliner = show_url.text
+    show_url = ''.join([base_url, show_url.get('href')])
+    show_supports = show.findAll(class_='supports')
+    if show_supports:
+        show_supports = [supports.text for supports in show_supports]
+    show_time = show.find(class_='start-time')
+    if show_time:
+        show_time = show_time.text
+    show_location = show.find(class_='venue')
+    if show_location:
+        show_location = show_location.text
+    show_age = show.find(class_='age-restriction')
+    if show_age:
+        show_age = show_age.text
+    show_cost = show.find(class_='free')
+    if show_cost:
+        show_cost = 'Free'
+
+    show_info = {
+        'show_date': show_date,
+        'show_time': show_time,
+        'show_url': show_url,
+        'show_headliner': show_headliner,
+        'show_supports': show_supports,
+        'show_location': show_location,
+        'show_age': show_age,
+        'show_cost': show_cost
+        }
+
+    return show_info
 
 
 def chapel():
     '''
     Scrapes calendar information from The Chapel SF website.
     '''
-    venue = Venue.query.get(1)
     chapel_shows = []
     base_url = 'http://www.thechapelsf.com'
     calendar_url = ''.join([base_url, '/calendar/'])
@@ -43,49 +92,11 @@ def chapel():
 
         shows = day.findAll('div', class_='one-event')
         for show in shows:
-            show_url = show.find(class_='url')
-            if show_url:
-                show_headliner = show_url.text
-            show_url = ''.join([base_url, show_url.get('href')])
-            show_supports = show.findAll(class_='supports')
-            if show_supports:
-                show_supports = [supports.text for supports in show_supports]
-            show_time = show.find(class_='start-time')
-            if show_time:
-                show_time = show_time.text
-            show_location = show.find(class_='venue')
-            if show_location:
-                show_location = show_location.text
-            show_age = show.find(class_='age-restriction')
-            if show_age:
-                show_age = show_age.text
-            show_cost = show.find(class_='free')
-            if show_cost:
-                show_cost = 'Free'
-
-            show_info = {
-                'show_date': show_date,
-                'show_time': show_time,
-                'show_url': show_url,
-                'show_headliner': show_headliner,
-                'show_supports': show_supports,
-                'show_location': show_location,
-                'show_age': show_age,
-                'show_cost': show_cost
-                }
+            show_info = parse_chapel(show_date, show)
             chapel_shows.append(show_info)
+#            insert_concert(show_info)
 
-            concert = Concert(date=show_date,
-                              time=show_time,
-                              url=show_url,
-                              headliner=show_headliner,
-                              supports=','.join(show_supports),
-                              age=show_age,
-                              cost=show_cost,
-                              venue=venue)
-            db.session.add(concert)
-
-    db.session.commit()
+#    db.session.commit()
 
     return chapel_shows
 
