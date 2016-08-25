@@ -12,7 +12,8 @@ def _get_soup(url):
     '''
     Return soup of calendar
     '''
-    resp = requests.get(url)
+    headers = {'User-Agent': 'radradrad Concert Calendar v0.1 (radradrad.com)'}
+    resp = requests.get(url, headers=headers)
     soup = BeautifulSoup(resp.content, 'html.parser')
     return soup
 
