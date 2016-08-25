@@ -1,6 +1,4 @@
-from calendar import Calendar
 import datetime
-import itertools
 import os
 import pytz
 
@@ -32,6 +30,25 @@ class Venue(db.Model):
     def __repr__(self):
         return '<Venue {} - {}>'.format(self.name, self.location)
 
+    @staticmethod
+    def create_all():
+        changed = False
+        venues = [{'name': 'The Chapel',
+                   'location': 'sf'},
+                  {'name': 'The Vestry',
+                   'location': 'sf'},
+                  {'name': 'Bottom of the Hill',
+                   'location': 'sf'}]
+        for venue in venues:
+            venue_entry = Venue.query.filter_by(name=venue['name'],
+                                                location=venue['location']).first()
+            if venue_entry is None:
+                db.session.add(Venue(name=venue['name'],
+                                     location=venue['location']))
+                changed = True
+        if changed:
+            db.session.commit()
+
 
 class Concert(db.Model):
 
@@ -46,21 +63,15 @@ class Concert(db.Model):
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'))
 
     db.UniqueConstraint(date, time, headliner)
-#    def __init__(self, date, time, url, headliner, supports, age, cost, venue_id):
-#        self.date = date
-#        self.time = time
-#        self.url = url
-#        self.headliner = headliner
-#        self.supports = supports
-#        self.age = age
-#        self.cost = cost
-#        self.location = location
 
     def __repr__(self):
         return '<Concert {} - {}>'.format(self.headliner, self.date)
 
     @staticmethod
     def next_month():
+        '''
+        Returns next four weeks of concerts
+        '''
         date_start = datetime.datetime.now(pytz.timezone('US/Pacific'))
         date_end = date_start + datetime.timedelta(weeks=4)
         concerts = Concert.query.filter(Concert.date >= date_start,

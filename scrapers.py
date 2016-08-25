@@ -19,19 +19,10 @@ def _get_soup(url):
 
 
 def insert_show(show_info):
-#def insert_or_update(show_info):
-#    '''
-#    Insert concert information into DB
-#    '''
-    show_date = show_info['show_date']
-    show_time = show_info['show_time']
-    show_url = show_info['show_url']
-    show_headliner = show_info['show_headliner']
-    show_supports = ','.join(show_info['show_supports'])
-    show_age = show_info['show_age']
+    '''
+    Insert concert if not in database, else skip it
+    '''
     show_location = show_info['show_location']
-    show_cost = show_info['show_cost']
-#
     concert = Concert.query.filter_by(headliner=show_info['show_headliner'],
                                       date=show_info['show_date'],
                                       time=show_info['show_time']).first()
@@ -200,8 +191,13 @@ def both():
     return both_shows
 
 
-def main():
+def init_db():
     db.create_all()
+    Venue.create_all()
+
+
+def main():
+    init_db()
     chapel()
     both()
 
