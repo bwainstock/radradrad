@@ -56,6 +56,7 @@ local_settings.py
 # Flask stuff:
 instance/
 .webassets-cache
+config.py
 
 # Scrapy stuff:
 .scrapy
@@ -87,3 +88,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# sqlite
+*.sqlite
