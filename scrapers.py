@@ -17,10 +17,11 @@ def _get_soup(url):
     return soup
 
 
-def insert_or_update(show_info):
-    '''
-    Insert concert information into DB
-    '''
+def insert_show(show_info):
+#def insert_or_update(show_info):
+#    '''
+#    Insert concert information into DB
+#    '''
     show_date = show_info['show_date']
     show_time = show_info['show_time']
     show_url = show_info['show_url']
@@ -29,7 +30,7 @@ def insert_or_update(show_info):
     show_age = show_info['show_age']
     show_location = show_info['show_location']
     show_cost = show_info['show_cost']
-
+#
     concert = Concert.query.filter_by(headliner=show_info['show_headliner'],
                                       date=show_info['show_date'],
                                       time=show_info['show_time']).first()
@@ -42,8 +43,8 @@ def insert_or_update(show_info):
 #        concert.supports = show_supports
 #        concert.age = show_age
 #        concert.cost = show_cost
-
-    else:
+#
+    if concert is None:
         venue = Venue.query.filter_by(name=show_location).first()
         concert = Concert(date=show_info['show_date'],
                           time=show_info['show_time'],
@@ -53,7 +54,7 @@ def insert_or_update(show_info):
                           age=show_info['show_age'],
                           cost=show_info['show_cost'],
                           venue=venue)
-    db.session.merge(concert)
+        db.session.add(concert)
 
 
 def parse_chapel(show_date, raw_show):
@@ -116,7 +117,7 @@ def chapel():
         for show in shows:
             show_info = parse_chapel(show_date, show)
             chapel_shows.append(show_info)
-            insert_or_update(show_info)
+            insert_show(show_info)
 
     db.session.commit()
 
@@ -192,7 +193,7 @@ def both():
         if show.find(class_='date'):
             show_info = parse_both(show)
             both_shows.append(show_info)
-            insert_or_update(show_info)
+            insert_show(show_info)
 
     db.session.commit()
     return both_shows
