@@ -28,6 +28,13 @@
 {{fixes.ie8()}}
 {%- endblock %}
 
+{% import "bootstrap/google.html" as google %}
+
+{% block scripts %}
+  {{super()}}
+  {{google.uanalytics('U-XXXX-YY')}}
+{% endblock %}
+
 {# Adding our own CSS files is also done here. Check the documentation at
    http://pythonhosted.org/Flask-Bootstrap/basic-usage.html#available-blocks
    for an overview. #}
@@ -39,6 +46,13 @@
 {% endblock %}
 
 {# Finally, round things out with navigation #}
+
 {% block navbar %}
-{{nav.frontend_top.render()}}
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">raDraDraD!</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
