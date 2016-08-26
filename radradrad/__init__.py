@@ -10,13 +10,14 @@ from flask_sqlalchemy import SQLAlchemy
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 's;lkfjasl;djkfa;lskndvlksd'
-# app.config.from_object('config')
+app.debug = True
+app.config['SECRET_KEY'] = '13e8ee0ac43c84afa0ec52751ab4ed47'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL', 'sqlite:///' + os.path.join(basedir, 'db.sqlite'))
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# db = SQLAlchemy(app, session_options={"autoflush": False})
+# app.config.from_object('config')
+
 db = SQLAlchemy(app)
 Bootstrap(app)
 toolbar = DebugToolbarExtension(app)

@@ -1,12 +1,11 @@
 """Collection of functions to scrape various concert calendars"""
 
 from datetime import datetime
-
 import re
 import requests
 from bs4 import BeautifulSoup
 
-from models import db, Venue, Concert
+from radradrad import db, Venue, Concert
 
 
 def _get_soup(url):
