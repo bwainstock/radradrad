@@ -1,7 +1,7 @@
 import unittest
 import datetime
 from bs4 import BeautifulSoup
-import scrapers
+import scraper
 
 
 class TheChapelTestCase(unittest.TestCase):
