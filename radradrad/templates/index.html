@@ -13,9 +13,10 @@
                     {% for concert in concert_list %}
 
                         <div class="concert">
-                        <div>{{ utils.icon('music') }}</div>
+                            <div>{{ utils.icon('music') }}</div>
                             {{ concert.headliner }} {% if concert.supports %}- {{ concert.supports }} {% endif %}<br>
-                            <a href="{{ concert.url }}" target="_blank" rel="noopener noreferrer">{{ concert.venue.name }}</a>
+                            <a href="{{ concert.url }}" target="_blank"
+                               rel="noopener noreferrer">{{ concert.venue.name }}</a>
                         </div>
                     {% endfor %}
                 </p>
