@@ -1,5 +1,5 @@
 import datetime
-
+from collections import OrderedDict
 import os
 import pytz
 from flask import Flask, render_template
@@ -89,6 +89,7 @@ class Concert(db.Model):
         concerts_by_date = {date: [] for date in set(concert.date for concert in concerts)}
         for concert in concerts:
             concerts_by_date[concert.date].append(concert)
+        concerts_by_date = OrderedDict(sorted(concerts_by_date.items(), key=lambda t: t[0]))
 
         return concerts_by_date
 
