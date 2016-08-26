@@ -1,13 +1,16 @@
 import datetime
+
 import os
 import pytz
-
-from flask import Flask
+from flask import Flask, render_template
+from flask_bootstrap import Bootstrap
+from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 's;lkfjasl;djkfa;lskndvlksd'
 # app.config.from_object('config')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     'DATABASE_URL', 'sqlite:///' + os.path.join(basedir, 'db.sqlite'))
@@ -15,6 +18,8 @@ app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # db = SQLAlchemy(app, session_options={"autoflush": False})
 db = SQLAlchemy(app)
+Bootstrap(app)
+toolbar = DebugToolbarExtension(app)
 
 
 class Venue(db.Model):
@@ -23,9 +28,9 @@ class Venue(db.Model):
     location = db.Column(db.String(80))
     concerts = db.relationship('Concert', backref='venue', lazy='dynamic')
 
-#    def __init__(self, name, location):
-#        self.name = name
-#        self.location = location
+    #    def __init__(self, name, location):
+    #        self.name = name
+    #        self.location = location
 
     def __repr__(self):
         return '<Venue {} - {}>'.format(self.name, self.location)
@@ -51,7 +56,6 @@ class Venue(db.Model):
 
 
 class Concert(db.Model):
-
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime)
     time = db.Column(db.String(80))
@@ -69,11 +73,17 @@ class Concert(db.Model):
 
     @staticmethod
     def next_month():
-        '''
+        """
         Returns next four weeks of concerts
-        '''
+        """
         date_start = datetime.datetime.now(pytz.timezone('US/Pacific'))
         date_end = date_start + datetime.timedelta(weeks=4)
         concerts = Concert.query.filter(Concert.date >= date_start,
                                         Concert.date <= date_end).all()
         return concerts
+
+
+@app.route('/')
+def index():
+    concerts = Concert.next_month()
+    return render_template('index.html', concerts=concerts)
