@@ -80,11 +80,20 @@ class Concert(db.Model):
         date_start = datetime.datetime.now(pytz.timezone('US/Pacific'))
         date_end = date_start + datetime.timedelta(weeks=4)
         concerts = Concert.query.filter(Concert.date >= date_start,
-                                        Concert.date <= date_end).all()
+                                        Concert.date <= date_end).order_by(Concert.date.asc())
         return concerts
+
+    @staticmethod
+    def next_month_by_date():
+        concerts = Concert.next_month().all()
+        concerts_by_date = {date: [] for date in set(concert.date for concert in concerts)}
+        for concert in concerts:
+            concerts_by_date[concert.date].append(concert)
+
+        return concerts_by_date
 
 
 @app.route('/')
 def index():
-    concerts = Concert.next_month()
+    concerts = Concert.next_month_by_date()
     return render_template('index.html', concerts=concerts)
