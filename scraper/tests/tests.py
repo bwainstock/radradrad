@@ -1,13 +1,16 @@
 import unittest
 import datetime
+import os
 from bs4 import BeautifulSoup
 import scraper
 
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 class TheChapelTestCase(unittest.TestCase):
 
     def setUp(self):
-        with open('./tests/chapel_test_show.html', 'r') as f:
+        with open(os.path.join(basedir, 'chapel_test_show.html'), 'r') as f:
             self.show = BeautifulSoup(f.read(), 'html.parser')
 
 #    def test_the_chapel_get(self):
@@ -18,7 +21,7 @@ class TheChapelTestCase(unittest.TestCase):
 
     def test_parse_chapel(self):
         show_date = datetime.datetime(2016, 8, 25, 0, 0)
-        parsed_show = scrapers.parse_chapel(show_date, self.show)
+        parsed_show = scraper.parse_chapel(show_date, self.show)
         expected_output = {'show_age': 'All Ages',
                            'show_cost': None,
                            'show_date': datetime.datetime(2016, 8, 25, 0, 0),
@@ -34,11 +37,11 @@ class TheChapelTestCase(unittest.TestCase):
 class BottomOfTheHillTestCase(unittest.TestCase):
 
     def setUp(self):
-        with open('./tests/both_test_show.html', 'r') as f:
+        with open(os.path.join(basedir, 'both_test_show.html'), 'r') as f:
             self.show = BeautifulSoup(f.read(), 'html.parser')
 
     def test_parse_both(self):
-        parsed_show = scrapers.parse_both(self.show)
+        parsed_show = scraper.parse_both(self.show)
         expected_output = {'show_age': 'ALL AGES',
                            'show_cost': '$15 in advance / $17 at the door',
                            'show_date': datetime.datetime(2016, 8, 24, 0, 0),
