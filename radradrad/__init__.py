@@ -80,7 +80,8 @@ class Concert(db.Model):
         date_start = datetime.datetime.now(pytz.timezone('US/Pacific'))
         date_end = date_start + datetime.timedelta(weeks=4)
         concerts = Concert.query.filter(Concert.date >= date_start,
-                                        Concert.date <= date_end).order_by(Concert.date.asc())
+                                        Concert.date <= date_end,
+                                        Concert.url != None).order_by(Concert.date.asc())
         return concerts
 
     @staticmethod
