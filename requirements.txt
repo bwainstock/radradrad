@@ -4,3 +4,4 @@ Flask-Bootstrap==3.3.6.0
 Flask-SQLAlchemy==2.1
 pytz==2016.6.1
 requests==2.11.1
+Flask-DebugToolbar==0.10.0
