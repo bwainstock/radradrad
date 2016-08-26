@@ -91,3 +91,6 @@ ENV/
 
 # sqlite
 *.sqlite
+
+# JetBrains
+.idea/

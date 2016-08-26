@@ -1,6 +1,7 @@
-'''Collection of functions to scrape various concert calendars'''
+"""Collection of functions to scrape various concert calendars"""
 
 from datetime import datetime
+
 import re
 import requests
 from bs4 import BeautifulSoup
@@ -9,9 +10,9 @@ from models import db, Venue, Concert
 
 
 def _get_soup(url):
-    '''
+    """
     Return soup of calendar
-    '''
+    """
     headers = {'User-Agent': 'radradrad Concert Calendar v0.1 (radradrad.com)'}
     resp = requests.get(url, headers=headers)
     soup = BeautifulSoup(resp.content, 'html.parser')
@@ -19,9 +20,9 @@ def _get_soup(url):
 
 
 def insert_show(show_info):
-    '''
+    """
     Insert concert if not in database, else skip it
-    '''
+    """
     show_location = show_info['show_location']
     concert = Concert.query.filter_by(headliner=show_info['show_headliner'],
                                       date=show_info['show_date'],
@@ -50,14 +51,16 @@ def insert_show(show_info):
 
 
 def parse_chapel(show_date, raw_show):
-    '''
+    """
     Parses shows for The Chapel SF
-    '''
+    """
     show = raw_show
     base_url = 'http://www.thechapelsf.com'
     show_url = show.find(class_='url')
     if show_url:
         show_headliner = show_url.text
+    else:
+        show_headliner = None
     show_url = ''.join([base_url, show_url.get('href')])
     show_supports = show.findAll(class_='supports')
     if show_supports:
@@ -90,9 +93,9 @@ def parse_chapel(show_date, raw_show):
 
 
 def chapel():
-    '''
+    """
     Scrapes calendar information from The Chapel SF website.
-    '''
+    """
     chapel_shows = []
     base_url = 'http://www.thechapelsf.com'
     calendar_url = ''.join([base_url, '/calendar/'])
@@ -117,9 +120,9 @@ def chapel():
 
 
 def parse_both(raw_show):
-    '''
+    """
     Parse show information for Bottom of the Hill
-    '''
+    """
 
     regex = r'vertical-align: top; background-color'
     show = raw_show.find(style=re.compile(regex))
@@ -170,9 +173,9 @@ def parse_both(raw_show):
 
 
 def both():
-    '''
+    """
     Scrapes calendar information from Bottom of the Hill website.
-    '''
+    """
 
     both_shows = []
     base_url = 'http://www.bottomofthehill.com'
