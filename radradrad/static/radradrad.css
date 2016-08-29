@@ -9,3 +9,12 @@
 .date-header {
     text-align: center;
 }
+
+#added-today {
+    text-align: right;
+    color: red;
+}
+
+#title {
+    text-align: center;
+}
