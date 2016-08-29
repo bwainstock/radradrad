@@ -42,7 +42,7 @@ def insert_show(show_info):
                           time=show_info['show_time'],
                           url=show_info['show_url'],
                           headliner=show_info['show_headliner'],
-                          supports=','.join(show_info['show_supports']),
+                          supports=','.join(show_info['show_supports']) if show_info['show_supports'] else None,
                           age=show_info['show_age'],
                           cost=show_info['show_cost'],
                           venue=venue)
@@ -132,6 +132,11 @@ def parse_both(raw_show):
         print(show_headliner)
         if len(bands) > 1:
             show_supports = [band.text for band in bands[1:]]
+        else:
+            show_supports = None
+    else:
+        show_headliner = None
+        show_supports = None
     show_url = show.find('a')
     if show_url:
         show_url = show_url.get('href')

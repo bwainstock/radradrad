@@ -5,3 +5,4 @@ Flask-SQLAlchemy==2.1
 pytz==2016.6.1
 requests==2.11.1
 Flask-DebugToolbar==0.10.0
+Flask-Migrate==2.0.0
