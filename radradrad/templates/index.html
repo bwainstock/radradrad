@@ -3,26 +3,30 @@
 {% block title %}raDraDraD{% endblock %}
 
 {% block content %}
-    <div class="container" id="main" style="margin: 0 10%;">
-        <h1>raDraDraD</h1>
-        {% if concerts %}
+<div class="container" id="main" style="margin: 0 10%;">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>raDraDraD</h1>
+            {% if concerts %}
             {% for day, concert_list in concerts.items() %}
-                <h3>{{ day.strftime('%A, %B %d, %Y') }}</h3>
+            <h3>{{ day.strftime('%A, %B %d, %Y') }}</h3>
 
-                <p id="{{ day.timestamp() }}">
-                    {% for concert in concert_list %}
+            <p id="{{ day.timestamp() }}">
+                {% for concert in concert_list %}
 
-                        <div class="concert">
-                            <div>{{ utils.icon('music') }}</div>
-                            {{ concert.headliner }} {% if concert.supports %}- {{ concert.supports }} {% endif %}<br>
-                            <a href="{{ concert.url }}" target="_blank"
-                               rel="noopener noreferrer">{{ concert.venue.name }}</a>
-                        </div>
-                    {% endfor %}
-                </p>
+            <div class="concert">
+                <div>{{ utils.icon('music') }}</div>
+                {{ concert.headliner }} {% if concert.supports %}- {{ concert.supports }} {% endif %}<br>
+                <a href="{{ concert.url }}" target="_blank"
+                   rel="noopener noreferrer">{{ concert.venue.name }}</a>
+            </div>
             {% endfor %}
-        {% else %}
+            </p>
+            {% endfor %}
+            {% else %}
             <li>No concerts!</li>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
+</div>
 {% endblock %}
