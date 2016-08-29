@@ -71,7 +71,7 @@ class Concert(db.Model):
     date = db.Column(db.DateTime)
     time = db.Column(db.String(80))
     url = db.Column(db.String(150))
-    headliner = db.Column(db.String(80))
+    headliner = db.Column(db.String(120))
     supports = db.Column(db.Text)
     age = db.Column(db.String(80))
     cost = db.Column(db.String(80))
