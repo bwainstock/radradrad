@@ -1,8 +1,5 @@
-from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.script import Manager
-from flask.ext.migrate import Migrate, MigrateCommand
-import datetime
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
 
 from radradrad import app, db
 
