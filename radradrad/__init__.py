@@ -23,6 +23,15 @@ Bootstrap(app)
 toolbar = DebugToolbarExtension(app)
 
 
+def timestamp():
+    """
+    Return the current timestamp as an integer
+    :return:
+    """
+
+    return int(datetime.datetime.now().timestamp())
+
+
 class Venue(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True)
@@ -58,6 +67,7 @@ class Venue(db.Model):
 
 class Concert(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.Integer, default=timestamp)
     date = db.Column(db.DateTime)
     time = db.Column(db.String(80))
     url = db.Column(db.String(150))
@@ -85,6 +95,15 @@ class Concert(db.Model):
         return concerts
 
     @staticmethod
+    def added_today():
+        today = datetime.datetime.today()
+
+        today_timestamp = int(datetime.datetime(today.year, today.month, today.day).timestamp())
+        concerts_added_today = Concert.query.filter(Concert.created_at >= today_timestamp)
+
+        return concerts_added_today
+
+    @staticmethod
     def next_month_by_date():
         concerts = Concert.next_month().all()
         concerts_by_date = {date: [] for date in set(concert.date for concert in concerts)}
@@ -98,4 +117,5 @@ class Concert(db.Model):
 @app.route('/')
 def index():
     concerts = Concert.next_month_by_date()
-    return render_template('index.html', concerts=concerts)
+    added_today = Concert.added_today().count()
+    return render_template('index.html', concerts=concerts, added_today=added_today)
