@@ -77,7 +77,7 @@ def insert_show(show_info):
                                         show_info['show_age'],
                                         show_info['show_cost'],
                                         venue_id))
-            logger.info('New concert: {}'.format(concert))
+            logger.info('New concert: {}'.format(show_info))
         except Exception as e:
             logger.error(e)
         logger.debug(show_info['show_headliner'])
