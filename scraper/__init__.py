@@ -60,6 +60,7 @@ def parse_chapel(show_date, raw_show):
         show_headliner = show_url.text
     else:
         show_headliner = None
+    print('Chapel: {}'.format(show_headliner))
     show_url = ''.join([base_url, show_url.get('href')])
     show_supports = show.findAll(class_='supports')
     if show_supports:
@@ -91,33 +92,6 @@ def parse_chapel(show_date, raw_show):
     return show_info
 
 
-def chapel():
-    """
-    Scrapes calendar information from The Chapel SF website.
-    """
-    chapel_shows = []
-    base_url = 'http://www.thechapelsf.com'
-    calendar_url = ''.join([base_url, '/calendar/'])
-
-    soup = _get_soup(calendar_url)
-
-    show_calendar = soup.findAll(class_='vevent')
-    for day in show_calendar:
-        show_date = day.find('span', class_='value-title').get('title')
-        show_date = re.search(r"([0-9-])+", show_date).group()
-        show_date = datetime.strptime(show_date, '%Y-%m-%d')
-
-        shows = day.findAll('div', class_='one-event')
-        for show in shows:
-            show_info = parse_chapel(show_date, show)
-            chapel_shows.append(show_info)
-            insert_show(show_info)
-
-    db.session.commit()
-
-    return chapel_shows
-
-
 def parse_both(raw_show):
     """
     Parse show information for Bottom of the Hill
@@ -129,7 +103,6 @@ def parse_both(raw_show):
     bands = show.findAll(class_='band')
     if bands:
         show_headliner = bands[0].text
-        print(show_headliner)
         if len(bands) > 1:
             show_supports = [band.text for band in bands[1:]]
         else:
@@ -137,6 +110,7 @@ def parse_both(raw_show):
     else:
         show_headliner = None
         show_supports = None
+    print('BotH: {}'.format(show_headliner))
     show_url = show.find('a')
     if show_url:
         show_url = show_url.get('href')
@@ -176,6 +150,30 @@ def parse_both(raw_show):
     return show_info
 
 
+def chapel():
+    """
+    Scrapes calendar information from The Chapel SF website.
+    """
+    chapel_shows = []
+    base_url = 'http://www.thechapelsf.com'
+    calendar_url = ''.join([base_url, '/calendar/'])
+
+    soup = _get_soup(calendar_url)
+
+    show_calendar = soup.findAll(class_='vevent')
+    for day in show_calendar:
+        show_date = day.find('span', class_='value-title').get('title')
+        show_date = re.search(r"([0-9-])+", show_date).group()
+        show_date = datetime.strptime(show_date, '%Y-%m-%d')
+
+        shows = day.findAll('div', class_='one-event')
+        for show in shows:
+            show_info = parse_chapel(show_date, show)
+            chapel_shows.append(show_info)
+
+    return chapel_shows
+
+
 def both():
     """
     Scrapes calendar information from Bottom of the Hill website.
@@ -192,9 +190,7 @@ def both():
         if show.find(class_='date'):
             show_info = parse_both(show)
             both_shows.append(show_info)
-            insert_show(show_info)
 
-    db.session.commit()
     return both_shows
 
 
@@ -205,8 +201,15 @@ def init_db():
 
 def main():
     init_db()
-    chapel()
-    both()
+    concerts = []
+    venues = {'The Chapel': chapel,
+              'Bottom of the Hill': both}
+    for venue in venues.values():
+        concerts.extend(venue())
+    for concert in concerts:
+        print('Concert: {}'.format(concert))
+        insert_show(concert)
+    db.session.commit()
 
 
 if __name__ == '__main__':
