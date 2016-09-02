@@ -1,7 +1,8 @@
 import datetime
-from collections import OrderedDict
+
 import os
 import pytz
+from collections import OrderedDict
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 from flask_debugtoolbar import DebugToolbarExtension
@@ -23,12 +24,13 @@ Bootstrap(app)
 toolbar = DebugToolbarExtension(app)
 
 
-def timestamp():
+def timestamp(date=None):
     """
     Return the current timestamp as an integer
     :return:
     """
-
+    if date:
+        return int(datetime.datetime.strptime(date, '%Y-%m-%d').timestamp())
     return int(datetime.datetime.now().timestamp())
 
 
@@ -113,6 +115,14 @@ class Concert(db.Model):
 
         return concerts_by_date
 
+@app.template_filter('timestamp')
+def timestamp_from_date(s):
+    return timestamp(s)
+
+
+@app.template_filter('display_date')
+def display_date(s):
+    return datetime.datetime.strptime(s, '%Y-%m-%d').strftime('%A, %B %d, %Y')
 
 @app.route('/')
 def index():

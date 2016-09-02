@@ -17,8 +17,8 @@
                 {% if concerts %}
                     {% for day, concert_list in concerts.items() %}
 
-                        <div id="{{ day.timestamp() }}">
-                            <h3 class="date-header">{{ day.strftime('%A, %B %d, %Y') }}</h3>
+                        <div id="{{ day|timestamp }}">
+                            <h3 class="date-header">{{ day|display_date }}</h3>
 
                             {% for concert in concert_list %}
 
