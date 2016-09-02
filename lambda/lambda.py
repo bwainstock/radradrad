@@ -29,13 +29,16 @@ def get_creds(bucket='radradrad', key='config.json'):
 
     return creds
 
-creds = get_creds()
-db = pymysql.connect(host=creds['host'],
-                     port=3306,
-                     password=creds['password'],
-                     user=creds['username'],
-                     db=creds['db'])
-cur = db.cursor()
+try:
+    creds = get_creds()
+    db = pymysql.connect(host=creds['host'],
+                         port=3306,
+                         password=creds['password'],
+                         user=creds['username'],
+                         db=creds['db'])
+    cur = db.cursor()
+except:
+    logger.error("Can't connect to DB")
 
 
 def _get_soup(url):
@@ -65,11 +68,13 @@ def insert_show(show_info):
         cur.execute(venue_id_query, (show_info['show_location'],))
         logger.debug(show_info['show_location'])
         venue_id = cur.fetchone()[0]
+        created_at = int(datetime.now().timestamp())
 
-        concert_query = """INSERT INTO concert (date, time, url, headliner, supports, age, cost, venue_id)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+        concert_query = """INSERT INTO concert (created_at, date, time, url, headliner, supports, age, cost, venue_id)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
         try:
-            cur.execute(concert_query, (show_info['show_date'],
+            cur.execute(concert_query, (created_at,
+                                        show_info['show_date'],
                                         show_info['show_time'],
                                         show_info['show_url'],
                                         show_info['show_headliner'],
@@ -81,7 +86,6 @@ def insert_show(show_info):
         except Exception as e:
             logger.error(e)
         logger.debug(show_info['show_headliner'])
-    db.commit()
 
 
 def parse_chapel(show_date, raw_show):
@@ -251,6 +255,7 @@ def main():
         concerts.extend(venue())
     for concert in concerts:
         insert_show(concert)
+        db.commit()
 
 
 def lambda_handler(event, context):
