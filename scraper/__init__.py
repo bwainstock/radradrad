@@ -1,6 +1,7 @@
 """Collection of functions to scrape various concert calendars"""
 
 from datetime import datetime
+
 import re
 import requests
 from bs4 import BeautifulSoup
@@ -54,6 +55,7 @@ def parse_chapel(show_date, raw_show):
     Parses shows for The Chapel SF
     """
     show = raw_show
+    show_date = show_date.strftime('%Y-%m-%d')
     base_url = 'http://www.thechapelsf.com'
     show_url = show.find(class_='url')
     if show_url:
@@ -118,7 +120,7 @@ def parse_both(raw_show):
     show_date = [date.text for date in show.findAll(class_='date')]
     if show_date:
         show_date = ''.join(show_date).strip('\n')
-        show_date = datetime.strptime(show_date, '%A %B %d %Y')
+        show_date = datetime.strptime(show_date, '%A %B %d %Y').strftime('%Y-%m-%d')
 
     show_time = ''.join([x.text for x in show.findAll(class_='time')])
     if show_time:
