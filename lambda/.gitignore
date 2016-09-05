@@ -1,4 +1,8 @@
+# Pip requirements
 beautifulsoup*
 bs4*
 requests*
 [pP][yY][mM][yY][sS][qQ][lL]*
+
+# Deployment zip
+lambda.zip
