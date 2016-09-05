@@ -94,3 +94,5 @@ ENV/
 
 # JetBrains
 .idea/
+
+*config*
