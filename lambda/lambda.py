@@ -88,6 +88,23 @@ def insert_show(show_info):
             logger.error(e)
         logger.debug(show_info['show_headliner'])
 
+        return show_info
+
+
+def status_email(message):
+    """
+    Sends status email with new concerts added to database
+    """
+    topic_arn  = 'arn:aws:sns:us-west-2:609459096019:radradradScraper'
+    subject = 'radradradScraper run {}'.format(datetime.now())
+    message = json.dumps(message) if message else 'No new concerts'
+    sns = boto3.client('sns')
+    resp = sns.publish(TopicArn=topic_arn,
+                       Subject=subject,
+                       Message=message)
+
+    return resp
+
 
 def parse_chapel(show_date, raw_show):
     """
@@ -250,13 +267,15 @@ def both():
 
 def main():
     concerts = []
+    new_shows = []
     venues = {'The Chapel': chapel,
               'Bottom of the Hill': both}
     for venue in venues.values():
         concerts.extend(venue())
     for concert in concerts:
-        insert_show(concert)
+        new_shows.append(insert_show(concert))
         db.commit()
+    notify_email(new_shows)
 
 
 def lambda_handler(event, context):
