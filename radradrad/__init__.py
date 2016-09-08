@@ -11,7 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
-app.debug = True
+app.debug = False
 app.config['SECRET_KEY'] = '13e8ee0ac43c84afa0ec52751ab4ed47'
 if os.path.isfile('config.json'):
     with open('../config.json') as f:
@@ -24,7 +24,7 @@ if os.path.isfile('config.json'):
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
         'DATABASE_URL', 'sqlite:///' + os.path.join(basedir, 'db.sqlite'))
-app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_ECHO'] = False
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # app.config.from_object('config')
 

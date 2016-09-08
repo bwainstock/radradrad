@@ -1,6 +1,7 @@
 from radradrad import app, db, Venue
 
-db.create_all()
-Venue.create_all()
+if __name__ == '__main__':
+    db.create_all()
+    Venue.create_all()
 
-app.run(host='0.0.0.0')
+    app.run()

@@ -1,0 +1,10 @@
+bind = 'unix:///tmp/radradrad.sock'
+workers = 3
+daemon = True
+user = 'ec2-user'
+group = 'nginx'
+
+errorlog = 'errorlog'
+loglevel = 'debug'
+accesslog = 'accesslog'
+access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
