@@ -1,5 +1,5 @@
 import datetime
-
+import json
 import os
 import pytz
 from collections import OrderedDict
@@ -13,8 +13,17 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = '13e8ee0ac43c84afa0ec52751ab4ed47'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', 'sqlite:///' + os.path.join(basedir, 'db.sqlite'))
+if os.path.isfile('config.json'):
+    with open('../config.json') as f:
+        db_creds = json.load(f)
+    db_url = 'mysql://{}:{}@{}/{}'.format(db_creds['username'],
+                                          db_creds['password'],
+                                          db_creds['host'],
+                                          db_creds['db'])
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+        'DATABASE_URL', 'sqlite:///' + os.path.join(basedir, 'db.sqlite'))
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # app.config.from_object('config')
