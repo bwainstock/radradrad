@@ -91,7 +91,7 @@ def insert_show(show_info):
         return show_info
 
 
-def status_email(message):
+def notify_email(message):
     """
     Sends status email with new concerts added to database
     """
@@ -273,7 +273,9 @@ def main():
     for venue in venues.values():
         concerts.extend(venue())
     for concert in concerts:
-        new_shows.append(insert_show(concert))
+        new_show = insert_show(concert)
+        if new_show:
+            new_shows.append(new_show)
         db.commit()
     notify_email(new_shows)
 
