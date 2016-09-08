@@ -64,7 +64,10 @@ class Venue(db.Model):
                   {'name': 'The Vestry',
                    'location': 'sf'},
                   {'name': 'Bottom of the Hill',
+                   'location': 'sf'},
+                  {'name': 'The Chapel Bar',
                    'location': 'sf'}]
+
         for venue in venues:
             venue_entry = Venue.query.filter_by(name=venue['name'],
                                                 location=venue['location']).first()
