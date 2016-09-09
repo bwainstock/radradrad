@@ -96,6 +96,16 @@ class Concert(db.Model):
     def __repr__(self):
         return '<Concert {} - {}>'.format(self.headliner, self.date)
 
+    def concert_to_dict(concerts):
+        """
+        Takes input of list of Concert objects and returns dictionary of dates with concerts
+        """
+        concerts_by_date = {date: [] for date in set(concert.date for concert in concerts)}
+        for concert in concerts:
+            concerts_by_date[concert.date].append(concert)
+        concerts_by_date = OrderedDict(sorted(concerts_by_date.items(), key=lambda t: t[0]))
+        return concerts_by_date
+
     @staticmethod
     def next_month():
         """
@@ -117,23 +127,19 @@ class Concert(db.Model):
 
         if return_dict:
             concerts = concerts_added_today.all()
-            concerts_by_date = {date: [] for date in set(concert.date for concert in concerts)}
-            for concert in concerts:
-                concerts_by_date[concert.date].append(concert)
-            concerts_by_date = OrderedDict(sorted(concerts_by_date.items(), key=lambda t: t[0]))
-            return concerts_by_date
+            return Concert.concert_to_dict(concerts)
+            #concerts_by_date = {date: [] for date in set(concert.date for concert in concerts)}
+            #for concert in concerts:
+            #    concerts_by_date[concert.date].append(concert)
+            #concerts_by_date = OrderedDict(sorted(concerts_by_date.items(), key=lambda t: t[0]))
+            #return concerts_by_date
 
         return concerts_added_today
 
     @staticmethod
     def next_month_by_date():
         concerts = Concert.next_month().all()
-        concerts_by_date = {date: [] for date in set(concert.date for concert in concerts)}
-        for concert in concerts:
-            concerts_by_date[concert.date].append(concert)
-        concerts_by_date = OrderedDict(sorted(concerts_by_date.items(), key=lambda t: t[0]))
-
-        return concerts_by_date
+        return Concert.concert_to_dict(concerts)
 
 @app.template_filter('timestamp')
 def timestamp_from_date(s):
@@ -147,12 +153,23 @@ def display_date(s):
 @app.route('/')
 def index():
     concerts = Concert.next_month_by_date()
+    venues = Venue.query.order_by(Venue.name).all()
     added_today = Concert.added_today().count()
-    return render_template('index.html', concerts=concerts, added_today=added_today)
+    return render_template('index.html', venues=venues, concerts=concerts, added_today=added_today)
+
+
+@app.route('/venue/<int:venue_id>')
+def venue(venue_id):
+    venues = Venue.query.order_by(Venue.name).all()
+    venue_concerts = Concert.query.filter(Concert.venue_id == venue_id).all()
+    concerts = Concert.concert_to_dict(venue_concerts)
+    added_today = Concert.added_today().count()
+    return render_template('index.html', venues=venues, concerts=concerts, added_today=added_today)
 
 
 @app.route('/new')
 def new():
+    venues = Venue.query.order_by(Venue.name).all()
     concerts_today = Concert.added_today(True)
     added_today = Concert.added_today().count()
-    return render_template('index.html', concerts=concerts_today, added_today=added_today)
+    return render_template('index.html', venues=venues, concerts=concerts_today, added_today=added_today)
