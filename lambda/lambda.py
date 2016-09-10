@@ -1,16 +1,16 @@
 """Collection of functions to scrape various concert calendars"""
 
-from datetime import datetime
 import json
 import logging
-import os
-import re
-import requests
 import time
+from datetime import datetime
 
 import boto3
-from bs4 import BeautifulSoup
+import os
 import pymysql
+import re
+import requests
+from bs4 import BeautifulSoup
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 #logging.basicConfig()
@@ -239,7 +239,8 @@ def chapel():
         for show in shows:
             logger.debug(show_date)
             show_info = parse_chapel(show_date, show)
-            chapel_shows.append(show_info)
+            if show_info.get('show_headliner') and show_info.get('show_headliner') != 'TBA':
+                chapel_shows.append(show_info)
 
     return chapel_shows
 
