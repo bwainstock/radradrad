@@ -107,14 +107,22 @@ class Concert(db.Model):
         return concerts_by_date
 
     @staticmethod
-    def next_month():
+    def date_range(date_start=None, date_end=None):
         """
         Returns next four weeks of concerts
         """
-        date_start = datetime.datetime.now(pytz.timezone('US/Pacific'))
-        date_end = date_start + datetime.timedelta(weeks=4)
-        concerts = Concert.query.filter(Concert.date >= date_start,
-                                        Concert.date <= date_end,
+        # date_start = datetime.datetime.now(pytz.timezone('US/Pacific'))
+        if date_start == None:
+            date_start = datetime.datetime.now()
+        else:
+            date_start = datetime.datetime.strptime(date_start, '%Y-%m-%d')
+        if date_end == None:
+            date_end = date_start + datetime.timedelta(weeks=4)
+        else:
+            date_end = datetime.datetime.strptime(date_end, '%Y-%m-%d')
+
+        concerts = Concert.query.filter(Concert.date >= date_start.strftime('%Y-%m-%d'),
+                                        Concert.date < date_end.strftime('%Y-%m-%d'),
                                         Concert.url != None).order_by(Concert.date.asc())
         return concerts
 
@@ -138,7 +146,7 @@ class Concert(db.Model):
 
     @staticmethod
     def next_month_by_date():
-        concerts = Concert.next_month().all()
+        concerts = Concert.date_range().all()
         return Concert.concert_to_dict(concerts)
 
 @app.template_filter('timestamp')
