@@ -260,7 +260,8 @@ def both():
     for show in show_calendar:
         if show.find(class_='date'):
             show_info = parse_both(show)
-            both_shows.append(show_info)
+            if show_info.get('show_headliner') and show_info.get('show_headliner') != 'TBA':
+                both_shows.append(show_info)
 
     return both_shows
 
