@@ -3,9 +3,32 @@ import unittest
 
 import os
 
-from radradrad import app, db, Venue, Concert
+from radradrad import app, db, Venue, Concert, timestamp
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+
+class VenueTestCase(unittest.TestCase):
+
+    def setUp(self):
+        app.config['TESTING'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
+        self.app = app.test_client()
+        db.create_all()
+        Venue.create_all()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+        os.unlink(os.path.join(basedir, 'test.db'))
+
+    def test_venue_creation(self):
+        expected_names = ['The Chapel',
+                          'The Vestry',
+                          'Bottom of the Hill',
+                          'The Chapel Bar']
+        rv = [x.name for x in Venue.query.all() if x.name]
+        for name in expected_names:
+            self.assertIn(name, rv)
 
 class ConcertTestCase(unittest.TestCase):
 
@@ -27,7 +50,7 @@ class ConcertTestCase(unittest.TestCase):
         for days in range(35):
             date = (datetime.datetime.now()+datetime.timedelta(days))
             concert = Concert(date=date.strftime('%Y-%m-%d'),
-                              created_at=int(datetime.datetime.now().timestamp()),
+                              created_at=timestamp(date.strftime('%Y-%m-%d')),
                               time=show_info['show_time'],
                               url=show_info['show_url'],
                               headliner=show_info['show_headliner'].format(days),
@@ -58,34 +81,45 @@ class ConcertTestCase(unittest.TestCase):
 
     def test_date_range_without_args_returns_29(self):
         rv = Concert.date_range()
-        assert rv.count() == 29
+        self.assertEqual(rv.count(), 29)
 
     def test_date_range_without_args_returns_correct_start_date(self):
         rv = Concert.date_range()
         start_date = self.min_date(rv).date
         expected = datetime.datetime.now().strftime('%Y-%m-%d')
-        assert start_date == expected
+        self.assertEqual(start_date, expected)
 
     def test_date_range_without_args_returns_correct_end_date(self):
         rv = Concert.date_range()
         end_date = self.max_date(rv).date
         expected = (datetime.datetime.now() + datetime.timedelta(28)).strftime('%Y-%m-%d')
-        assert end_date == expected
+        self.assertEqual(end_date, expected)
 
     def test_date_range_returns_count_with_args(self):
         start_date = "2016-09-13"
         end_date = "2016-09-23"
         rv = Concert.date_range(start_date, end_date)
-        assert rv.count() == 11
+        self.assertEqual(rv.count(), 11)
 
     def test_date_range_returns_start_date_with_args(self):
         start_date = "2016-09-13"
         end_date = "2016-09-23"
         rv = Concert.date_range(start_date, end_date)
-        assert self.min_date(rv).date == start_date
+        self.assertEqual(self.min_date(rv).date, start_date)
 
     def test_date_range_returns_end_date_with_args(self):
         start_date = "2016-09-13"
         end_date = "2016-09-23"
         rv = Concert.date_range(start_date, end_date)
-        assert self.max_date(rv).date == end_date
+        self.assertEqual(self.max_date(rv).date, end_date)
+
+    def test_added_today_returns_correct_count(self):
+        rv = Concert.added_today()
+        self.assertEqual(rv.count(), 1)
+
+    def test_added_today_returns_correct_concert(self):
+        date_today = datetime.datetime.today().strftime('%Y-%m-%d')
+        rv = Concert.added_today()
+        dates = set(concert.date for concert in rv)
+        self.assertEqual(len(dates), 1)
+        self.assertIn(date_today, list(dates))
