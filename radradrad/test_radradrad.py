@@ -1,6 +1,7 @@
 import datetime
-import os
 import unittest
+
+import os
 
 from radradrad import app, db, Venue, Concert
 
@@ -43,24 +44,48 @@ class ConcertTestCase(unittest.TestCase):
         db.drop_all()
         os.unlink(os.path.join(basedir, 'test.db'))
 
-    def test_date_range_without_args_returns_28(self):
+    def min_date(self, query):
+        """
+        Returns min/first/start date of Concert query
+        """
+        return min(query.all(), key=lambda x: x.date)
+
+    def max_date(self, query):
+        """
+        Returns max/last/end date of Concert query
+        """
+        return max(query.all(), key=lambda x: x.date)
+
+    def test_date_range_without_args_returns_29(self):
         rv = Concert.date_range()
-        assert rv.count() == 28
+        assert rv.count() == 29
 
     def test_date_range_without_args_returns_correct_start_date(self):
         rv = Concert.date_range()
-        start_date = min(rv.all(), key=lambda x: x.date).date
+        start_date = self.min_date(rv).date
         expected = datetime.datetime.now().strftime('%Y-%m-%d')
         assert start_date == expected
 
     def test_date_range_without_args_returns_correct_end_date(self):
         rv = Concert.date_range()
-        end_date = max(rv.all(), key=lambda x: x.date).date
-        expected = (datetime.datetime.now() + datetime.timedelta(27)).strftime('%Y-%m-%d')
+        end_date = self.max_date(rv).date
+        expected = (datetime.datetime.now() + datetime.timedelta(28)).strftime('%Y-%m-%d')
         assert end_date == expected
 
-    def test_date_range_returns_with_args(self):
+    def test_date_range_returns_count_with_args(self):
         start_date = "2016-09-13"
         end_date = "2016-09-23"
         rv = Concert.date_range(start_date, end_date)
-        assert rv.count() == 10
+        assert rv.count() == 11
+
+    def test_date_range_returns_start_date_with_args(self):
+        start_date = "2016-09-13"
+        end_date = "2016-09-23"
+        rv = Concert.date_range(start_date, end_date)
+        assert self.min_date(rv).date == start_date
+
+    def test_date_range_returns_end_date_with_args(self):
+        start_date = "2016-09-13"
+        end_date = "2016-09-23"
+        rv = Concert.date_range(start_date, end_date)
+        assert self.max_date(rv).date == end_date

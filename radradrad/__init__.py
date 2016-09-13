@@ -1,7 +1,7 @@
 import datetime
 import json
+
 import os
-import pytz
 from collections import OrderedDict
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.debug = False
 app.config['SECRET_KEY'] = '13e8ee0ac43c84afa0ec52751ab4ed47'
 if os.path.isfile('config.json'):
-    with open('../config.json') as f:
+    with open('config.json') as f:
         db_creds = json.load(f)
     db_url = 'mysql://{}:{}@{}/{}'.format(db_creds['username'],
                                           db_creds['password'],
@@ -122,7 +122,7 @@ class Concert(db.Model):
             date_end = datetime.datetime.strptime(date_end, '%Y-%m-%d')
 
         concerts = Concert.query.filter(Concert.date >= date_start.strftime('%Y-%m-%d'),
-                                        Concert.date < date_end.strftime('%Y-%m-%d'),
+                                        Concert.date <= date_end.strftime('%Y-%m-%d'),
                                         Concert.url != None).order_by(Concert.date.asc())
         return concerts
 
