@@ -27,7 +27,8 @@
                                     {{ concert.headliner }} {% if concert.supports %}-
                                     <i>{{ concert.supports }}</i> {% endif %}<br>
                                     <a href="{{ concert.url }}" target="_blank"
-                                       rel="noopener noreferrer">{{ concert.venue.name }}</a>
+                                       rel="noopener noreferrer">{{ concert.venue.name }}</a>  
+				    {% if concert.cost %} - {{ concert.cost }}{% endif %} {% if concert.age %} - {{ concert.age }} {% endif %}
                                 </div>
                             {% endfor %}
                         </div>

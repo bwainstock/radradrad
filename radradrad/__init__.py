@@ -11,7 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
-app.debug = True
+app.debug = False
 app.config['SECRET_KEY'] = '13e8ee0ac43c84afa0ec52751ab4ed47'
 if os.path.isfile('config.json'):
     with open('config.json') as f:
@@ -129,10 +129,13 @@ class Concert(db.Model):
     @staticmethod
     def added_today(return_dict=False):
         today = datetime.datetime.today()
+        tomorrow = today + datetime.timedelta(1)
 
         # today_timestamp = int(datetime.datetime(today.year, today.month, today.day).timestamp())
         today_timestamp = timestamp('{}-{}-{}'.format(today.year, today.month, today.day))
-        concerts_added_today = Concert.query.filter(Concert.created_at == today_timestamp)
+        tomorrow_timestamp = timestamp('{}-{}-{}'.format(tomorrow.year, tomorrow.month, tomorrow.day))
+        concerts_added_today = Concert.query.filter(Concert.created_at >= today_timestamp,
+                                                    Concert.created_at < tomorrow_timestamp)
 
         if return_dict:
             concerts = concerts_added_today.all()
