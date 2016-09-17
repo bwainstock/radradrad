@@ -46,9 +46,9 @@ class ConcertTestCase(unittest.TestCase):
                      "show_age": "All Ages",
                      "show_cost": "Free"
                     }
-
+        self.start_date = datetime.datetime.utcnow()
         for days in range(35):
-            date = (datetime.datetime.now()+datetime.timedelta(days))
+            date = (self.start_date+datetime.timedelta(days))
             concert = Concert(date=date.strftime('%Y-%m-%d'),
                               created_at=timestamp(date.strftime('%Y-%m-%d')),
                               time=show_info['show_time'],
@@ -96,20 +96,20 @@ class ConcertTestCase(unittest.TestCase):
         self.assertEqual(end_date, expected)
 
     def test_date_range_returns_count_with_args(self):
-        start_date = "2016-09-13"
-        end_date = "2016-09-23"
+        start_date = self.start_date.strftime("%Y-%m-%d")
+        end_date = (self.start_date+datetime.timedelta(10)).strftime("%Y-%m-%d")
         rv = Concert.date_range(start_date, end_date)
         self.assertEqual(rv.count(), 11)
 
     def test_date_range_returns_start_date_with_args(self):
-        start_date = "2016-09-13"
-        end_date = "2016-09-23"
+        start_date = self.start_date.strftime("%Y-%m-%d")
+        end_date = (self.start_date+datetime.timedelta(10)).strftime("%Y-%m-%d")
         rv = Concert.date_range(start_date, end_date)
         self.assertEqual(self.min_date(rv).date, start_date)
 
     def test_date_range_returns_end_date_with_args(self):
-        start_date = "2016-09-13"
-        end_date = "2016-09-23"
+        start_date = self.start_date.strftime("%Y-%m-%d")
+        end_date = (self.start_date+datetime.timedelta(10)).strftime("%Y-%m-%d")
         rv = Concert.date_range(start_date, end_date)
         self.assertEqual(self.max_date(rv).date, end_date)
 

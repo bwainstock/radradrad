@@ -40,7 +40,7 @@ def timestamp(date=None):
     """
     if date:
         return int(datetime.datetime.strptime(date, '%Y-%m-%d').timestamp())
-    return int(datetime.datetime.now().timestamp())
+    return int(datetime.datetime.utcnow().timestamp())
 
 
 class Venue(db.Model):
@@ -113,7 +113,7 @@ class Concert(db.Model):
         """
         # date_start = datetime.datetime.now(pytz.timezone('US/Pacific'))
         if date_start == None:
-            date_start = datetime.datetime.now()
+            date_start = datetime.datetime.utcnow()
         else:
             date_start = datetime.datetime.strptime(date_start, '%Y-%m-%d')
         if date_end == None:
@@ -128,7 +128,7 @@ class Concert(db.Model):
 
     @staticmethod
     def added_today(return_dict=False):
-        today = datetime.datetime.today()
+        today = datetime.datetime.utcnow()
         tomorrow = today + datetime.timedelta(1)
 
         # today_timestamp = int(datetime.datetime(today.year, today.month, today.day).timestamp())
