@@ -68,7 +68,7 @@ def insert_show(show_info):
         cur.execute(venue_id_query, (show_info['show_location'],))
         logger.debug(show_info['show_location'])
         venue_id = cur.fetchone()[0]
-        created_at = int(datetime.utcnow().timestamp())
+        created_at = int(datetime.utcnow().strftime("%s"))
 
         concert_query = """INSERT INTO concert (created_at, date, time, url, headliner, supports, age, cost, venue_id)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
